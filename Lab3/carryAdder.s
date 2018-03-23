@@ -6,6 +6,7 @@ liczba1:
 			#jego dokladnosc ustawia sie w PC (precision control)
 liczba2:
         .float 0.25
+
 control_word: .short 0	#latwiejsze odwolanie sie do zmiennej
 
 
@@ -38,8 +39,23 @@ setControlWord:
 	FLDCW control_word	#Ustawienie wybranej precyzji
 
 setNumbers:
-	FLD liczba1
-	FLD liczba2
+	#FLDL liczba1	#Wrzucenie liczby DOUBLE
+	#FLD liczba1	#Wrzucenie liczby FLOAT
+
+	FLDL liczba1	#Wepchniecie na STOS FPU ST0
+	FST %st(6)	#Przeniesienei na 1 pozycje (pozniej znajdzie sie na 2)
+	FLDL liczba2	#Wepchniecie na STOS FPU ST0, poprzedni sie przesunie na ST1
+	FST %st(6)	#Przeniesienei na 1 pozycje
+
+add:	#Dodawanie
+	
+sub:	#Odejmowanie
+
+mul:	#mnozenie
+
+div:	#dzielenie
+
+sqrt:	#pierwiastek - dobre do wygenerowania NaN sqrt(-1)
 	
 exit:
 	MOV $SYSEXIT, %eax
