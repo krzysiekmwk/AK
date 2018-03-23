@@ -1,11 +1,17 @@
 .code32
 
+#GENERACJA ROZNYCH WYNIKOW
+#+-INF l2 / l1 -> +-4.2 / 0
+#+-0 l2 * l1 -> +-4.2 * 0
+#NaN l2 / l1 -> 0.0 / 0.0
+	
+
 .data
 liczba1:
-	.float 0.05	#inicjalizacja liczb zmiennym przecinkiem
+	.float 1.0	#inicjalizacja liczb zmiennym przecinkiem
 			#jego dokladnosc ustawia sie w PC (precision control)
 liczba2:
-        .float 0.25
+        .float 0.0
 
 control_word: .short 0	#latwiejsze odwolanie sie do zmiennej
 
@@ -64,17 +70,15 @@ sub:	#Odejmowanie
 mul:	#mnozenie
 	FXCH %st(2)	#zamiana ST0 z ST2
 	FST %st(2)	#Skopiowanie ST0 do ST2
-	FMUL %st(1), %st(0)	#ST0 = liczba2 - liczba1; zrodlo -> cel; cel = cel * zrodlo
+	FMUL %st(1), %st(0)	#ST0 = liczba2 * liczba1; zrodlo -> cel; cel = cel * zrodlo
 	FST %st(5)	#Skopiowanie wyniku na ST5
 
 div:	#dzielenie
 	FXCH %st(2)	#zamiana ST0 z ST2
 	FST %st(2)	#Skopiowanie ST0 do ST2
-	FDIV %st(1), %st(0)	#ST0 = liczba2 - liczba1; zrodlo -> cel; cel = cel / zrodlo
+	FDIV %st(1), %st(0)	#ST0 = liczba2 / liczba1; zrodlo -> cel; cel = cel / zrodlo
 	FST %st(6)	#Skopiowanie wyniku na ST6
 
-sqrt:	#pierwiastek - dobre do wygenerowania NaN sqrt(-1)
-	
 exit:
 	MOV $SYSEXIT, %eax
 	MOV $EXIT_SUCCESS, %ebx
