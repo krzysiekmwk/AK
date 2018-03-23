@@ -2,42 +2,45 @@
 
 .data
 liczba1:
-	.long 0xF0000002, 0x10000011, 0xF0000004, 0xF0000001
+	.float 0.05	#inicjalizacja liczb zmiennym przecinkiem
+			#jego dokladnosc ustawia sie w PC (precision control)
 liczba2:
-        .long 0xF0000002, 0x20000026, 0x90000002, 0x00000001
+        .float 0.25
+control_word: .short 0	#latwiejsze odwolanie sie do zmiennej
 
 
-SYSEXIT = 1
+SYSEXIT = 1		#potrzebne do zakonczenia poprawnie programu
 EXIT_SUCCESS = 0
 
 .text
-.global _start
+.global _start		#start programu
 _start:
 
-	MOV $3, %edx
-	CLC
-	PUSHF
+setControlWord:
+	FSTCW control_word	#Pobranie aktualnego rejestru kontrolnego
+	FWAIT 	#Odczekanie FPU wykona swoje zadanie
+	MOV control_word, %ax 	#Zapis w rejestrze 16 bitowy
 
-loop:
-	MOV liczba1(,%edx,4), %eax
-	MOV liczba2(,%edx,4), %ebx
+	#Ustawienie precyzji
+	AND $0xFCFF, %ax 	#1111 1100 1111 1111 - wyzerowanie PC
+	OR $0x0000, %ax 	#SINGLE PRECISION - 32bit /24 REAL4
+	#OR $0x0200, %ax 	#DOUBLE PRECISION - 64bit /53 REAL8
+	#OR $0x0300, %ax 	#EXTENDED PRECISION - 80bit /64 REAL10
 
-	POPF
-	ADC %ebx, %eax
-	PUSH %eax
-	PUSHF
-	SUB $1, %edx
-	CMP $-1, %edx
-	JNE loop
-	POPF
-	JNC mov0toEAX
-	MOV $1, %eax
-	JMP push
+	#Ustawienie zaokraglen
+	AND $0xF3FF, %ax 	#1111 1100 1111 1111 - wyzerowanie RC
+	OR $0x0000, %ax 	#Zaokraglenie do najblizszej lub parzystej
+	#OR $0x0400, %ax 	#Zaokraglenie w dol
+	#OR $0x0800, %ax 	#Zaokraglenie w gore
+	#OR $0x0C00, %ax 	#obciecie do 0
 
-mov0toEAX:
-	MOV $0, %eax
-push:
-	PUSH %eax
+	MOV %ax, control_word
+	FLDCW control_word	#Ustawienie wybranej precyzji
+
+setNumbers:
+	FLD liczba1
+	FLD liczba2
+	
 exit:
 	MOV $SYSEXIT, %eax
 	MOV $EXIT_SUCCESS, %ebx
