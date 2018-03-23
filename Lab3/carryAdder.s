@@ -42,18 +42,36 @@ setNumbers:
 	#FLDL liczba1	#Wrzucenie liczby DOUBLE
 	#FLD liczba1	#Wrzucenie liczby FLOAT
 
-	FLDL liczba1	#Wepchniecie na STOS FPU ST0
-	FST %st(6)	#Przeniesienei na 1 pozycje (pozniej znajdzie sie na 2)
-	FLDL liczba2	#Wepchniecie na STOS FPU ST0, poprzedni sie przesunie na ST1
-	FST %st(6)	#Przeniesienei na 1 pozycje
+	FLD liczba1	#Wepchniecie na STOS FPU ST1
+	FLD liczba2	#Wepchniecie na STOS FPU ST0, poprzedni sie przesunie na ST1
+	FST %st(2)	#Skopiowania ST0 na STOS FPU ST2
+
+	#Wyswietlanie: info float - moze byc przydatne, ale nie do konca poprawnie wyswietla
+	#p $st0 - wyswietla dokladnie dana komorke
 
 add:	#Dodawanie
-	
+	FXCH %st(2)	#zamiana ST0 z ST2
+	FST %st(2)	#Skopiowanie ST0 do ST2
+	FADD %st(1), %st(0)	#ST0 = liczba2 + liczba1; zrodlo -> cel; cel = cel + zrodlo
+	FST %st(3)	#Skopiowanie wyniku na ST3
+
 sub:	#Odejmowanie
+	FXCH %st(2)	#zamiana ST0 z ST2
+	FST %st(2)	#Skopiowanie ST0 do ST2
+	FSUB %st(1), %st(0)	#ST0 = liczba2 - liczba1; zrodlo -> cel; cel = cel - zrodlo
+	FST %st(4)	#Skopiowanie wyniku na ST4
 
 mul:	#mnozenie
+	FXCH %st(2)	#zamiana ST0 z ST2
+	FST %st(2)	#Skopiowanie ST0 do ST2
+	FMUL %st(1), %st(0)	#ST0 = liczba2 - liczba1; zrodlo -> cel; cel = cel * zrodlo
+	FST %st(5)	#Skopiowanie wyniku na ST5
 
 div:	#dzielenie
+	FXCH %st(2)	#zamiana ST0 z ST2
+	FST %st(2)	#Skopiowanie ST0 do ST2
+	FDIV %st(1), %st(0)	#ST0 = liczba2 - liczba1; zrodlo -> cel; cel = cel / zrodlo
+	FST %st(6)	#Skopiowanie wyniku na ST6
 
 sqrt:	#pierwiastek - dobre do wygenerowania NaN sqrt(-1)
 	
