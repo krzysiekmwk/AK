@@ -4,14 +4,14 @@
 #+-INF l2 / l1 -> +-4.2 / 0
 #+-0 l2 * l1 -> +-4.2 * 0
 #NaN l2 / l1 -> 0.0 / 0.0
-	
+
 
 .data
 liczba1:
-	.float 1.0	#inicjalizacja liczb zmiennym przecinkiem
+	.float 1.5	#inicjalizacja liczb zmiennym przecinkiem
 			#jego dokladnosc ustawia sie w PC (precision control)
 liczba2:
-        .float 0.0
+        .float 0.05
 
 control_word: .short 0	#latwiejsze odwolanie sie do zmiennej
 
@@ -48,8 +48,8 @@ setNumbers:
 	#FLDL liczba1	#Wrzucenie liczby DOUBLE
 	#FLD liczba1	#Wrzucenie liczby FLOAT
 
-	FLD liczba1	#Wepchniecie na STOS FPU ST1
-	FLD liczba2	#Wepchniecie na STOS FPU ST0, poprzedni sie przesunie na ST1
+	FLD liczba2	#Wepchniecie na STOS FPU ST1
+	FLD liczba1	#Wepchniecie na STOS FPU ST0, poprzedni sie przesunie na ST1
 	FST %st(2)	#Skopiowania ST0 na STOS FPU ST2
 
 	#Wyswietlanie: info float - moze byc przydatne, ale nie do konca poprawnie wyswietla
@@ -58,25 +58,25 @@ setNumbers:
 add:	#Dodawanie
 	FXCH %st(2)	#zamiana ST0 z ST2
 	FST %st(2)	#Skopiowanie ST0 do ST2
-	FADD %st(1), %st(0)	#ST0 = liczba2 + liczba1; zrodlo -> cel; cel = cel + zrodlo
+	FADD %st(1), %st(0)	#ST0 = liczba1 + liczba2; zrodlo -> cel; cel = cel + zrodlo
 	FST %st(3)	#Skopiowanie wyniku na ST3
 
 sub:	#Odejmowanie
 	FXCH %st(2)	#zamiana ST0 z ST2
 	FST %st(2)	#Skopiowanie ST0 do ST2
-	FSUB %st(1), %st(0)	#ST0 = liczba2 - liczba1; zrodlo -> cel; cel = cel - zrodlo
+	FSUB %st(1), %st(0)	#ST0 = liczba1 - liczba2; zrodlo -> cel; cel = cel - zrodlo
 	FST %st(4)	#Skopiowanie wyniku na ST4
 
 mul:	#mnozenie
 	FXCH %st(2)	#zamiana ST0 z ST2
 	FST %st(2)	#Skopiowanie ST0 do ST2
-	FMUL %st(1), %st(0)	#ST0 = liczba2 * liczba1; zrodlo -> cel; cel = cel * zrodlo
+	FMUL %st(1), %st(0)	#ST0 = liczba1 * liczba2; zrodlo -> cel; cel = cel * zrodlo
 	FST %st(5)	#Skopiowanie wyniku na ST5
 
 div:	#dzielenie
 	FXCH %st(2)	#zamiana ST0 z ST2
 	FST %st(2)	#Skopiowanie ST0 do ST2
-	FDIV %st(1), %st(0)	#ST0 = liczba2 / liczba1; zrodlo -> cel; cel = cel / zrodlo
+	FDIV %st(1), %st(0)	#ST0 = liczba1 / liczba2; zrodlo -> cel; cel = cel / zrodlo
 	FST %st(6)	#Skopiowanie wyniku na ST6
 
 exit:
