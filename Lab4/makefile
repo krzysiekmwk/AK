@@ -1,7 +1,7 @@
-all: cprogram clear
+all: lab4 clear
 
-cprogram: cprogram.c
-	gcc -o cprogram -g cprogram.c -mmmx -msse2
+lab4: lab4.c
+	gcc -o lab4 -g lab4.c -mmmx -msse2
 
 clear:
 	rm -f *.o
