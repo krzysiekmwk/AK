@@ -13,8 +13,14 @@ int a0, a1, a2, a3;
 int b0, b1, b2, b3;
 int w0, w1, w2, w3;
 
-struct Vector addSIMD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
+struct Vector wek1;
+struct Vector wek2;
+struct Vector wyn;
+struct Vector wynik;
+
+double addSIMD(){
+
+	clock_t start = clock();
 
 	asm(
 		"movups	%1, %%xmm0 \n"
@@ -22,73 +28,78 @@ struct Vector addSIMD(struct Vector v1, struct Vector v2){
 		"addps %%xmm1, %%xmm0 \n"
 		"movups	%%xmm0, %0 \n"
 		: "=g" (wynik)
-		: "g"(v1), "g"(v2)
+		: "g"(wek1), "g"(wek2)
 		: "%xmm0", "%xmm1"
 	);
 	
-	return wynik;
+	clock_t stop = clock();
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector subSIMD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-
+double subSIMD(){
+	
+	clock_t start = clock();
+	
 	asm(
 		"movups	%1, %%xmm0 \n"
 		"movups	%2, %%xmm1 \n"
 		"subps %%xmm1, %%xmm0 \n"
 		"movups	%%xmm0, %0 \n"
 		: "=g" (wynik)
-		: "g"(v1), "g"(v2)
+		: "g"(wek1), "g"(wek2)
 		: "%xmm0", "%xmm1"
 	);
 	
-	return wynik;
+	clock_t stop = clock();
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector mulSIMD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-
+double mulSIMD(){
+	
+	clock_t start = clock();
+	
 	asm(
 		"movups	%1, %%xmm0 \n"
 		"movups	%2, %%xmm1 \n"
 		"mulps %%xmm1, %%xmm0 \n"
 		"movups	%%xmm0, %0 \n"
 		: "=g" (wynik)
-		: "g"(v1), "g"(v2)
+		: "g"(wek1), "g"(wek2)
 		: "%xmm0", "%xmm1"
 	);
 	
-	return wynik;
+	clock_t stop = clock();
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector divSIMD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-
+double divSIMD(){
+	
+	clock_t start = clock();
+	
 	asm(
 		"movups	%1, %%xmm0 \n"
 		"movups	%2, %%xmm1 \n"
 		"divps %%xmm1, %%xmm0 \n"
 		"movups	%%xmm0, %0 \n"
 		: "=g" (wynik)
-		: "g"(v1), "g"(v2)
+		: "g"(wek1), "g"(wek2)
 		: "%xmm0", "%xmm1"
 	);
 	
-	return wynik;
+	clock_t stop = clock();
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector addSISD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-	
-	a0 = v1.x0;
-	a1 = v1.x1;
-	a2 = v1.x2;
-	a3 = v1.x3;
+double addSISD(){
+	a0 = wek1.x0;
+	a1 = wek1.x1;
+	a2 = wek1.x2;
+	a3 = wek1.x3;
 
-	b0 = v2.x0;
-	b1 = v2.x1;
-	b2 = v2.x2;
-	b3 = v2.x3;
+	b0 = wek2.x0;
+	b1 = wek2.x1;
+	b2 = wek2.x2;
+	b3 = wek2.x3;
 
 	//cos zwraca zle wyniki dla X2
 	/*asm(
@@ -114,7 +125,7 @@ struct Vector addSISD(struct Vector v1, struct Vector v2){
 	);*/
 	//Dla =g bedzie to kolejna %0, %1, %2, %3
 	//Dla g bedzie to 4 -> 11
-	
+	clock_t start = clock();
 	asm(
 		"mov a0, %%eax \n"
 		"mov b0, %%ebx \n"
@@ -137,26 +148,28 @@ struct Vector addSISD(struct Vector v1, struct Vector v2){
 		: "%eax", "%ebx"
 	);
 
+	clock_t stop = clock();
+	
 	wynik.x0 = w0;
 	wynik.x1 = w1;
 	wynik.x2 = w2;
 	wynik.x3 = w3;
 
-	return wynik;
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector subSISD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-	
-	a0 = v1.x0;
-	a1 = v1.x1;
-	a2 = v1.x2;
-	a3 = v1.x3;
+double subSISD(){
+	a0 = wek1.x0;
+	a1 = wek1.x1;
+	a2 = wek1.x2;
+	a3 = wek1.x3;
 
-	b0 = v2.x0;
-	b1 = v2.x1;
-	b2 = v2.x2;
-	b3 = v2.x3;
+	b0 = wek2.x0;
+	b1 = wek2.x1;
+	b2 = wek2.x2;
+	b3 = wek2.x3;
+	
+	clock_t start = clock();
 	
 	asm(
 		"mov a0, %%eax \n"
@@ -179,27 +192,29 @@ struct Vector subSISD(struct Vector v1, struct Vector v2){
 		: 
 		: "%eax", "%ebx"
 	);
+	
+	clock_t stop = clock();
 
 	wynik.x0 = w0;
 	wynik.x1 = w1;
 	wynik.x2 = w2;
 	wynik.x3 = w3;
 
-	return wynik;
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector mulSISD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-	
-	a0 = v1.x0;
-	a1 = v1.x1;
-	a2 = v1.x2;
-	a3 = v1.x3;
+double mulSISD(){
+	a0 = wek1.x0;
+	a1 = wek1.x1;
+	a2 = wek1.x2;
+	a3 = wek1.x3;
 
-	b0 = v2.x0;
-	b1 = v2.x1;
-	b2 = v2.x2;
-	b3 = v2.x3;
+	b0 = wek2.x0;
+	b1 = wek2.x1;
+	b2 = wek2.x2;
+	b3 = wek2.x3;
+	
+	clock_t start = clock();
 	
 	asm(
 		"mov a0, %%eax \n"
@@ -222,27 +237,29 @@ struct Vector mulSISD(struct Vector v1, struct Vector v2){
 		: 
 		: "%eax", "%ebx"
 	);
+	
+	clock_t stop = clock();
 
 	wynik.x0 = w0;
 	wynik.x1 = w1;
 	wynik.x2 = w2;
 	wynik.x3 = w3;
 
-	return wynik;
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
-struct Vector divSISD(struct Vector v1, struct Vector v2){
-	struct Vector wynik;
-	
-	a0 = v1.x0;
-	a1 = v1.x1;
-	a2 = v1.x2;
-	a3 = v1.x3;
+double divSISD(){
+	a0 = wek1.x0;
+	a1 = wek1.x1;
+	a2 = wek1.x2;
+	a3 = wek1.x3;
 
-	b0 = v2.x0;
-	b1 = v2.x1;
-	b2 = v2.x2;
-	b3 = v2.x3;
+	b0 = wek2.x0;
+	b1 = wek2.x1;
+	b2 = wek2.x2;
+	b3 = wek2.x3;
+	
+	clock_t start = clock();
 
 	asm(
 		"mov a0, %%eax \n"
@@ -269,25 +286,23 @@ struct Vector divSISD(struct Vector v1, struct Vector v2){
 		: 
 		: "%eax", "%ebx"
 	);
+	
+	clock_t stop = clock();
 
 	wynik.x0 = w0;
 	wynik.x1 = w1;
 	wynik.x2 = w2;
 	wynik.x3 = w3;
 
-	return wynik;
+	return (double)(stop - start) / CLOCKS_PER_SEC;
 }
 
 int main(void){
 	srand(time(NULL));
 	
-	FILE *f = fopen("wynik.txt", "w");
+	FILE *f = fopen("wynikAsm.txt", "w");
 
 	double totalTime = 0;
-	
-	struct Vector wek1;
-	struct Vector wek2;
-	struct Vector wyn;
 	
 	//printf("%d, %d, %d, %d \n", wyn.x3, wyn.x2, wyn.x1, wyn.x0);
 	/*
@@ -327,14 +342,8 @@ int main(void){
 				wek2.x0 = rand()%100000 + 1;
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
-				
-				clock_t start = clock();
 		
-				wyn = addSIMD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
-		
+				totalTime += addSIMD();
 			}
 		}
 	
@@ -361,14 +370,9 @@ int main(void){
 				wek2.x0 = rand()%100000 + 1;
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
+
+				totalTime += subSIMD();
 				
-				clock_t start = clock();
-		
-				wyn = subSIMD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
-		
 			}
 		}
 	
@@ -395,14 +399,9 @@ int main(void){
 				wek2.x0 = rand()%100000 + 1;
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
-				
-				clock_t start = clock();
 		
-				wyn = mulSIMD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
-		
+				totalTime += mulSIMD();
+
 			}
 		}
 	
@@ -430,12 +429,7 @@ int main(void){
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
 				
-				clock_t start = clock();
-		
-				wyn = divSIMD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
+				totalTime += divSIMD();
 		
 			}
 		}
@@ -464,12 +458,7 @@ int main(void){
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
 				
-				clock_t start = clock();
-		
-				wyn = addSISD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
+				totalTime += addSISD();
 		
 			}
 		}
@@ -498,12 +487,7 @@ int main(void){
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
 				
-				clock_t start = clock();
-		
-				wyn = subSISD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
+				totalTime += subSISD();
 		
 			}
 		}
@@ -531,12 +515,8 @@ int main(void){
 				wek2.x0 = rand()%100000 + 1;
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
-				clock_t start = clock();
 		
-				wyn = mulSISD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
+				totalTime += mulSISD();
 			}
 		}
 		
@@ -564,12 +544,7 @@ int main(void){
 				//printf("%d, %d, %d, %d \n", wek1.x3, wek1.x2, wek1.x1, wek1.x0);
 				//printf("%d, %d, %d, %d \n", wek2.x3, wek2.x2, wek2.x1, wek2.x0);
 				
-				clock_t start = clock();
-				
-				wyn = divSISD(wek1, wek2);
-				
-				clock_t stop = clock();
-				totalTime += (double)(stop - start) / CLOCKS_PER_SEC;
+				totalTime += divSISD();
 			}
 		}
 		
